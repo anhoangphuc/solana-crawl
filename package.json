@@ -4,7 +4,10 @@
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
+    "@project-serum/anchor": "0.26.0",
+    "@renec-foundation/kyc-sdk": "^0.1.4",
     "@solana/web3.js": "^1.95.0",
+    "solana-spl-token": "npm:@solana/spl-token@^0.4.8",
     "typescript": "^5.5.3"
   },
   "scripts": {

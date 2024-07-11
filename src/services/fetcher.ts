@@ -26,7 +26,6 @@ export async function fetchTransactionsFromProgramId(
       transactionSignatures.map((signatureInfo) => signatureInfo.signature),
       'finalized'
     );
-    console.log(`QUERY `, parsedTransactions.length);
 
     const filteredTransactions = parsedTransactions
       .filter((parsedTransaction) => parsedTransaction !== null)

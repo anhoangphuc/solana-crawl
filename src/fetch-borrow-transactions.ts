@@ -17,8 +17,6 @@ export const customFilter = (parsedTransaction: ParsedTransactionWithMeta) => {
   return false;
 };
 
-
-
 export async function extractBorrowDetails(connection: Connection, parsedTransaction: ParsedTransactionWithMeta) {
   const borrowDetails = parsedTransaction.meta?.logMessages?.find((x) => x.includes('borrow_fee_receiver'));
   if (borrowDetails) {
@@ -39,6 +37,8 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
       mint: tokenAccount.mint.toBase58(),
       blockTimestamp: parsedTransaction.blockTime,
     };
+  } else {
+    throw new Error(`Parsed tx error ${parsedTransaction.transaction.signatures}`);
   }
 }
 (async () => {
@@ -59,4 +59,7 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
       }
     })
   );
+
+  fs.writeFileSync('./data/user_borrow.json', JSON.stringify(borrowUsers, null, 2));
+
 })();

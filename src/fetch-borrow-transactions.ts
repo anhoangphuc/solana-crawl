@@ -35,15 +35,15 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
       user: user?.toBase58(),
       amount,
       mint: tokenAccount.mint.toBase58(),
-      blockTimestamp: parsedTransaction.blockTime,
+      blockTimestamp: parsedTransaction.blockTime
     };
   } else {
     throw new Error(`Parsed tx error ${parsedTransaction.transaction.signatures}`);
   }
 }
 (async () => {
-  const startTime = convertDateStringToUnixTimeSecond('08/07/2024 00:00:00');
-  const endTime = convertDateStringToUnixTimeSecond('09/07/2024 00:00:00');
+  const startTime = convertDateStringToUnixTimeSecond('15/07/2024 00:00:00');
+  const endTime = convertDateStringToUnixTimeSecond('17/07/2024 00:00:00');
   const txs = await fetchTransactionsFromProgramId(
     programId,
     connectionURI,
@@ -61,5 +61,4 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
   );
 
   fs.writeFileSync('./data/user_borrow.json', JSON.stringify(borrowUsers, null, 2));
-
 })();

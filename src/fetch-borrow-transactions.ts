@@ -1,9 +1,7 @@
 import { PublicKey, Connection, ParsedTransactionWithMeta, Keypair } from '@solana/web3.js';
 import { fetchTransactionsFromProgramId } from './services/fetcher';
 import { convertDateStringToUnixTimeSecond } from './utils';
-import { Context, KYC_PROGRAM_ID_MAINNET, ProviderClient } from '@renec-foundation/kyc-sdk';
-import { AnchorProvider, Wallet } from '@project-serum/anchor';
-import { TokenAccountNotFoundError, getAccount } from 'solana-spl-token';
+import { getAccount } from 'solana-spl-token';
 import fs from 'fs';
 
 const connectionURI = 'https://api-mainnet-beta.renec.foundation:8899/';
@@ -28,6 +26,7 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
     if (amount === null || borrower === null) {
       throw new Error(`Parsed tx error ${parsedTransaction.transaction.signatures}`);
     }
+    console.log("GET TOKEN ACCOUNT ", borrower);
     const tokenAccount = await getAccount(connection, new PublicKey(borrower));
     const user = parsedTransaction.transaction.message.accountKeys.filter((account) => account.signer).at(-1)?.pubkey;
     return {
@@ -43,22 +42,22 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
 }
 (async () => {
   const startTime = convertDateStringToUnixTimeSecond('15/07/2024 00:00:00');
-  const endTime = convertDateStringToUnixTimeSecond('17/07/2024 00:00:00');
+  const endTime = convertDateStringToUnixTimeSecond('22/07/2024 00:00:00');
   const txs = await fetchTransactionsFromProgramId(
     programId,
     connectionURI,
     { pageSize: 50, startTime, endTime },
     customFilter
   );
+  console.log('TXS', txs.length);
   const connection = new Connection(connectionURI, 'confirmed');
-  const borrowUsers = await Promise.all(
-    txs.map(async (tx) => {
-      if (tx) {
-        const res = await extractBorrowDetails(connection, tx);
-        return res;
-      }
-    })
-  );
+  const borrowUsers = [];
+  for (const tx of txs) {
+    if (tx) {
+      const res = await extractBorrowDetails(connection, tx);
+      borrowUsers.push(res);
+    }
+  }
 
   fs.writeFileSync('./data/user_borrow.json', JSON.stringify(borrowUsers, null, 2));
 })();

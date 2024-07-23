@@ -90,11 +90,15 @@ type BorrowDetatil = {
     }
     if (kycLevel[user.user] < 3) continue;
     if (!tokenSymbol[user.mint]) {
-      const tokenInfo = await fetchTokensCdn(RENEC_URL_CDN, [new PublicKey(user.mint)]);
-      if (tokenInfo?.length > 0) {
-        tokenSymbol[user.mint] = tokenInfo[0].symbol;
+      if (user.mint === "So11111111111111111111111111111111111111112") {
+        tokenSymbol[user.mint] = "RENEC";
       } else {
-        throw new Error(`Not found info for token ${user.mint}`);
+        const tokenInfo = await fetchTokensCdn(RENEC_URL_CDN, [new PublicKey(user.mint)]);
+        if (tokenInfo?.length > 0) {
+          tokenSymbol[user.mint] = tokenInfo[0].symbol;
+        } else {
+          throw new Error(`Not found info for token ${user.mint}`);
+        }
       }
     }
     if (!report[user.user]) {

@@ -15,6 +15,7 @@
     "@solana/spl-account-compression": "^0.2.1",
     "@solana/web3.js": "^1.95.0",
     "axios": "^1.7.2",
+    "mpl-token-metadata-231": "npm:@metaplex-foundation/mpl-token-metadata@2.13.0",
     "solana-spl-token": "npm:@solana/spl-token@^0.4.8",
     "typescript": "^5.5.3"
   },

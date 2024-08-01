@@ -90,8 +90,8 @@ type BorrowDetatil = {
     }
     if (kycLevel[user.user] < 3) continue;
     if (!tokenSymbol[user.mint]) {
-      if (user.mint === "So11111111111111111111111111111111111111112") {
-        tokenSymbol[user.mint] = "RENEC";
+      if (user.mint === 'So11111111111111111111111111111111111111112') {
+        tokenSymbol[user.mint] = 'RENEC';
       } else {
         const tokenInfo = await fetchTokensCdn(RENEC_URL_CDN, [new PublicKey(user.mint)]);
         if (tokenInfo?.length > 0) {

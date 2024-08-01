@@ -18,11 +18,10 @@ import { web3 } from '@project-serum/anchor';
     }
   }
 
-  console.log("TOTAL AMOUNT");
+  console.log('TOTAL AMOUNT');
   console.log(totalAmount);
   const connection = new Connection('https://api-mainnet-beta.renec.foundation:8899/');
   const keypair = await getKeypairFromFile('~/.config/renec/deployer_mainnet.json');
-
 
   // const getBalance: Record<string, boolean> = {};
   // for (const user in reportData) {
@@ -39,25 +38,25 @@ import { web3 } from '@project-serum/anchor';
   for (const user in reportData) {
     for (const mint in reportData[user]) {
       const { amount, symbol, kycLevel, txHashs } = reportData[user][mint];
-      if (!["reUSD", "RENEC", "reVND"].includes(symbol)) {
+      if (!['reUSD', 'RENEC', 'reVND'].includes(symbol)) {
         continue;
       }
-      console.log("USER", user, "MINT", mint, "AMOUNT", amount, symbol, "KYC LEVEL ", kycLevel);
-      if (symbol === "RENEC") {
+      console.log('USER', user, 'MINT', mint, 'AMOUNT', amount, symbol, 'KYC LEVEL ', kycLevel);
+      if (symbol === 'RENEC') {
         const transaction = new web3.Transaction().add(
           web3.SystemProgram.transfer({
             fromPubkey: keypair.publicKey,
             toPubkey: new PublicKey(user),
-            lamports: amount,
+            lamports: amount
           })
         );
-        const txHash  = await web3.sendAndConfirmTransaction(connection, transaction, [keypair]);
-        console.log("Transfer success at txHash ", txHash);
+        const txHash = await web3.sendAndConfirmTransaction(connection, transaction, [keypair]);
+        console.log('Transfer success at txHash ', txHash);
       } else {
         const source = await getAssociatedTokenAddress(new PublicKey(mint), keypair.publicKey);
         const destination = await getAssociatedTokenAddress(new PublicKey(mint), new PublicKey(user));
         const txHash = await transfer(connection, keypair, source, destination, keypair, amount);
-        console.log("Transfer success at txHash", txHash);
+        console.log('Transfer success at txHash', txHash);
       }
       await delay(3000);
     }
@@ -65,6 +64,5 @@ import { web3 } from '@project-serum/anchor';
 })();
 
 function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
-

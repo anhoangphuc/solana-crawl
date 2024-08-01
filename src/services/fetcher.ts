@@ -22,12 +22,12 @@ export async function fetchTransactionsFromProgramId(
 
     remainTransactionsCount -= transactionSignatures.length;
 
-    console.log("GET PARSED TXS");
+    console.log('GET PARSED TXS');
     const parsedTransactions = await connection.getParsedTransactions(
       transactionSignatures.map((signatureInfo) => signatureInfo.signature),
       'confirmed'
     );
-    console.log("GET PARSED TXS SUCCESS");
+    console.log('GET PARSED TXS SUCCESS');
 
     const filteredTransactions = parsedTransactions
       .filter((parsedTransaction) => parsedTransaction !== null)
@@ -45,7 +45,7 @@ export async function fetchTransactionsFromProgramId(
         customFilter ? parsedTransaction !== null && customFilter(parsedTransaction) : true
       );
 
-      console.log("FILTERED TRANSACTIONS", filteredTransactions.length);
+    console.log('FILTERED TRANSACTIONS', filteredTransactions.length);
 
     transactions.push(...filteredTransactions);
 

@@ -26,7 +26,7 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
     if (amount === null || borrower === null) {
       throw new Error(`Parsed tx error ${parsedTransaction.transaction.signatures}`);
     }
-    console.log("GET TOKEN ACCOUNT ", borrower);
+    console.log('GET TOKEN ACCOUNT ', borrower);
     const tokenAccount = await getAccount(connection, new PublicKey(borrower));
     const user = parsedTransaction.transaction.message.accountKeys.filter((account) => account.signer).at(-1)?.pubkey;
     return {

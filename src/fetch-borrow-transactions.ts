@@ -43,12 +43,12 @@ export async function extractBorrowDetails(connection: Connection, parsedTransac
 (async () => {
   const startTime = convertDateStringToUnixTimeSecond('15/07/2024 00:00:00');
   const endTime = convertDateStringToUnixTimeSecond('22/07/2024 00:00:00');
-  const txs = await fetchTransactionsFromProgramId(
+  const txs = (await fetchTransactionsFromProgramId(
     programId,
     connectionURI,
     { pageSize: 50, startTime, endTime },
     customFilter
-  );
+  )).parsedTransactions;
   console.log('TXS', txs.length);
   const connection = new Connection(connectionURI, 'confirmed');
   const borrowUsers = [];

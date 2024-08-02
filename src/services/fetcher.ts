@@ -5,8 +5,10 @@ export async function fetchTransactionsFromProgramId(
   programId: string,
   connectionUrl: string,
   fetchTransactionsParam: FetchTransactionsParam,
-  customFilter?: (parsedTransaction: ParsedTransactionWithMeta) => boolean
-) {
+  customFilter?: (parsedTransaction: ParsedTransactionWithMeta) => boolean,
+  customProcessor?: (parsedTransaction: ParsedTransactionWithMeta) => void,
+): Promise<{ parsedTransactions: (ParsedTransactionWithMeta | null)[]; processedTransactions: any[] }> 
+ {
   const connection = new Connection(connectionUrl, 'confirmed');
   const programPublicKey = new PublicKey(programId);
 
@@ -19,18 +21,17 @@ export async function fetchTransactionsFromProgramId(
       limit: Math.min(pageSize, remainTransactionsCount),
       before: beforeTransactionSignature
     });
+    console.log('GET TRANSACTION SIGNATURES SUCCESS', transactionSignatures.length);
 
     remainTransactionsCount -= transactionSignatures.length;
 
-    console.log('GET PARSED TXS');
     const parsedTransactions = await connection.getParsedTransactions(
       transactionSignatures.map((signatureInfo) => signatureInfo.signature),
       { commitment: 'confirmed', maxSupportedTransactionVersion: 0 },
     );
-    console.log('GET PARSED TXS SUCCESS');
 
     const filteredTransactions = parsedTransactions
-      .filter((parsedTransaction) => parsedTransaction !== null)
+      .filter((parsedTransaction) => parsedTransaction !== null && parsedTransaction?.meta?.err === null)
       .filter((parsedTransaction) =>
         fetchTransactionsParam.startTime
           ? parsedTransaction?.blockTime && parsedTransaction.blockTime >= fetchTransactionsParam.startTime
@@ -44,8 +45,6 @@ export async function fetchTransactionsFromProgramId(
       .filter((parsedTransaction) =>
         customFilter ? parsedTransaction !== null && customFilter(parsedTransaction) : true
       );
-
-    console.log('FILTERED TRANSACTIONS', filteredTransactions.length);
 
     transactions.push(...filteredTransactions);
 
@@ -64,5 +63,5 @@ export async function fetchTransactionsFromProgramId(
     }
   }
 
-  return transactions;
+  return { parsedTransactions: transactions, processedTransactions: [] };
 }

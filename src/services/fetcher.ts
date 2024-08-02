@@ -25,7 +25,7 @@ export async function fetchTransactionsFromProgramId(
     console.log('GET PARSED TXS');
     const parsedTransactions = await connection.getParsedTransactions(
       transactionSignatures.map((signatureInfo) => signatureInfo.signature),
-      'confirmed'
+      { commitment: 'confirmed', maxSupportedTransactionVersion: 0 },
     );
     console.log('GET PARSED TXS SUCCESS');
 
@@ -58,6 +58,9 @@ export async function fetchTransactionsFromProgramId(
     if (fetchTransactionsParam.startTime && lastTransaction) {
       // if the last transaction is before the start time, break
       if (lastTransaction.blockTime && lastTransaction.blockTime < fetchTransactionsParam.startTime) break;
+    }
+    if (transactionSignatures.length === 0) {
+      break;
     }
   }
 

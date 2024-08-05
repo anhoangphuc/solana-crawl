@@ -31,7 +31,7 @@ export async function fetchTransactionsFromProgramId(
     );
 
     const filteredTransactions = parsedTransactions
-      .filter((parsedTransaction) => parsedTransaction !== null && parsedTransaction?.meta?.err === null)
+      .filter((parsedTransaction) => parsedTransaction !== null)
       .filter((parsedTransaction) =>
         fetchTransactionsParam.startTime
           ? parsedTransaction?.blockTime && parsedTransaction.blockTime >= fetchTransactionsParam.startTime
@@ -46,10 +46,19 @@ export async function fetchTransactionsFromProgramId(
         customFilter ? parsedTransaction !== null && customFilter(parsedTransaction) : true
       );
 
+
     transactions.push(...filteredTransactions);
+    if (customProcessor) {
+      filteredTransactions.forEach((parsedTransaction) => {
+        if (parsedTransaction) {
+          customProcessor(parsedTransaction);
+        }
+      });
+    }
 
     // if we have fetched all `count` transactions, break
     if (remainTransactionsCount === 0) break;
+    if (parsedTransactions.length === 0) break;
 
     const lastTransaction = parsedTransactions.at(-1);
     // Continue to fetch from the last transaction
